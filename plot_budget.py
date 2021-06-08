@@ -92,21 +92,18 @@ def plot_carbon_budget_distribution():
     countries=pd.read_csv('results/countries.csv',  index_col=1) 
     cts=countries.index.to_list()
     e_1990 = co2_emissions_year(cts, opts, year=1990)
-    budgets = ['cb25be3', 'cb25be3','cb25ex0','cb34be3','cb34ex0','cb48be3',
-               'cb48ex0','cb70be3','cb70ex0']
-    col={'cb25be3':'blue',
-         'cb25ex0':'blue',
-         'cb34be3':'dodgerblue',
+    budgets = ['cb25ex0','cb34ex0','cb48ex0','cb70ex0']
+
+    col={'cb25ex0':'yellowgreen',
          'cb34ex0':'dodgerblue',
-         'cb48be3':'lightcoral',
-         'cb48ex0':'lightcoral',
-         'cb70be3':'darkred',
+         'cb48ex0':'gold',
+         #'orange', 
          'cb70ex0':'darkred'}
     for budget in budgets:
         path_cb =  'results/version-{}/csvs/'.format(budget)
         CO2_CAP=pd.read_csv(path_cb + 'carbon_budget_distribution.csv',  
                         index_col=0) 
-        ls='--' if 'ex' in budget else '-'
+        ls='-' if 'ex' in budget else '--'
         ax1.plot(e_1990*CO2_CAP[budget],linewidth=3, 
                  color=col[budget], linestyle=ls, label=None)
             
@@ -142,8 +139,9 @@ def plot_carbon_budget_distribution():
                      marker='*', markersize=12, markerfacecolor='black',
                      markeredgecolor='black', label='EU commited target')
             
-    ax1.legend(fancybox=True, fontsize=18, loc=(0.01,0.01), 
-                       facecolor='white', frameon=True) 
+    ax1.legend(['1.50$^{\circ}$C,', '1.60$^{\circ}$C', '1.75$^{\circ}$C', '2$^{\circ}C$'], 
+               fancybox=True, fontsize=18, loc=(0.01,0.01), 
+               facecolor='white', frameon=True) 
             
     path_cb_plot = 'figures/'             
     plt.savefig(path_cb_plot+'carbon_budgets.png', dpi=300) 

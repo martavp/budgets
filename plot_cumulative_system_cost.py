@@ -28,7 +28,7 @@ gcb = [420, 580, 800, 1170]
 T = [1.5, 1.6, 1.7, 2.0]
 discount_rates = [0.0, 0.02, 0.04, 0.06, 0.08]
 budgets = ['25', '34', '48', '70']
-decays = ['be3', 'ex0']
+decays = ['ex0'] #'be3'
 
 color_dr ={0: 'sienna',
           0.02: 'darkgoldenrod',
@@ -41,9 +41,10 @@ marker_cb ={'25':'o',
            '48':'^', 
            '70':'D',
            'noH2network':'+',
-           'wo_eff':'x'}
-style_decay={'be3':'-', 
-             'ex0':'--'}
+           'wo_eff':'x',
+           'noBECC':'1'}
+style_decay={'be3':'--', 
+             'ex0':'-'}
 
 cb2gcb=pd.Series(gcb,index=budgets).to_dict()
 
@@ -70,7 +71,7 @@ for discount_rate in discount_rates:
                  linestyle=style_decay[decay],
                  label=discount_rate) 
 
-for scenario in ['noH2network','wo_eff']:
+for scenario in ['noH2network','wo_eff','noBECC']:
     discount_rate=0.02
     budget='48'
     cumulative_cost_df = pd.read_csv('results/version-cb{}-{}{}/csvs/cumulative_cost.csv'.format(budget,scenario,decay))
@@ -83,6 +84,7 @@ for scenario in ['noH2network','wo_eff']:
              linewidth=0,
              marker=marker_cb[scenario],
              markeredgecolor='black', #color_dr[discount_rate],
+             markerfacecolor=None,
              label=scenario) 
 
 ax1.set_ylabel('Cumulative System Costs (B€)')   
@@ -95,7 +97,7 @@ ax2.set_xlim(300, 1300)
 ax2.set_xlabel('Global carbon budget (GtCO$_2$)') 
 ax1.set_xticks([420, 580, 800, 1170])
 ax1.set_xticklabels(T)
-
+#ax1.set_ylim([15000, 17000])
 ax1.legend(fancybox=True, fontsize=16, loc=(-0.1, -0.25), facecolor='white', 
            frameon=True, ncol=6)       
 plt.savefig('figures/cumulative_system_cost_transmission{}.png'.format(transmission), dpi=600, bbox_inches='tight')

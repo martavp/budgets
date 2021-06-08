@@ -1,0 +1,79 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Oct 29 15:48:59 2018
+
+@author: Marta
+"""
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+import numpy as np
+from datetime import datetime
+from datetime import timedelta
+import matplotlib.pylab as pl
+import seaborn as sns; sns.set()
+idx = pd.IndexSlice
+
+plt.style.use('seaborn-ticks')
+plt.rcParams['axes.labelsize'] = 14
+plt.rcParams['legend.fontsize'] = 14
+plt.rcParams['xtick.labelsize'] = 14
+plt.rcParams['ytick.labelsize'] = 14
+plt.rcParams['xtick.direction'] = 'in'
+plt.rcParams['ytick.direction'] = 'in'
+plt.rcParams['axes.titlesize'] = 14
+
+#def plot_co2_prices():
+
+# data downloaded from https://sandbag.org.uk/carbon-price-viewer/
+data=pd.read_csv('data/eua-price.csv', sep=',')
+plt.figure(figsize=(10, 6))
+gs1 = gridspec.GridSpec(1, 1)
+ax1 = plt.subplot(gs1[0,0])
+date= [datetime.strptime(hour, '%Y-%m-%d %H:%M:%S').date() for hour in data['Date']]
+ax1.plot(date, data['Price'] , linewidth=2, color='black', label='ETS market')
+col = ['yellowgreen', 'dodgerblue', 'gold','orange', 'darkred']
+budgets = ['25'] #, '34', '48', '70']
+decay = 'ex0'
+
+for budget in budgets:
+    metrics_df = pd.read_csv('results/version-cb{}{}/csvs/metrics.csv'.format(budget,decay))
+    metrics_df = metrics_df.set_index(['cluster', 'lv', 'opt', 'planning_horizon']).sort_index()
+    #opt ='3H-T-H-B-I-solar3-dist1-cb{}{}'.format(budget,decay)
+    #CO2_price= metrics_df.loc[idx[cluster,transmission,opt, 'cumulative cost'],str(discount_rate)]
+plt.savefig('figures/co2_price.png', dpi=300, bbox_inches='tight')
+#%%
+    idx = pd.IndexSlice
+    metrics=pd.read_csv('results/version-Base/csvs/metrics.csv', sep=',', 
+                    index_col=0, header=[0,1,2])
+    
+    date2 = [datetime(2020,1,1,0,0,0) + timedelta(hours=8760*i*5) for i in range(0,7)]
+    ax1.plot(date2, metrics.loc['co2_price',idx['go', 'TYNDP',:]], linewidth=2, color= 'dodgerblue', 
+             marker='o', markerfacecolor='white', markeredgecolor='dodgerblue', label='Early and Steady path')
+    ax1.plot(date2, metrics.loc['co2_price',idx['wait', 'TYNDP',:]], linewidth=2, 
+             color= 'firebrick', marker='o',  markerfacecolor='white', 
+             markeredgecolor='firebrick',label='Late and Rapid path')
+    ax1.set_ylabel('CO$_2$ price (€/ton)', fontsize=16)
+    ax1.grid(linestyle='--')
+    ax1.set_ylim([0, 500])  
+    ax1.set_xlim([datetime(2008,1,1,0,0,0), datetime(2051,1,1,0,0,0)]) 
+    ax1.plot([datetime(2005,1,1,0,0,0), datetime(2050,1,1,0,0,0)],
+              [275, 275], color='gold', linewidth = 195, alpha =0.15)
+    ax1.annotate('Co-benefits for human \n health and agriculture',
+                 xy=(datetime(2017,1,1,0,0,0),310),color='black', fontsize=16) 
+    ax1.annotate('', xy=(datetime(2030,1,1,0,0,0), 125), 
+                  xytext=(datetime(2030,1,1,0,0,0), 425),
+                  color='gold', fontsize=16, 
+                  arrowprops = dict(arrowstyle = "->", alpha=1,
+                                color='gold', linewidth=2),)
+    ax1.annotate('', xy=(datetime(2030,1,1,0,0,0), 425), 
+                  xytext=(datetime(2030,1,1,0,0,0), 125),
+                  color='gold', fontsize=16, 
+                  arrowprops = dict(arrowstyle = "->", alpha=1,
+                                color='gold', linewidth=2),)
+    
+    ax1.legend(fancybox=False, fontsize=16, loc=(0.012,0.2), facecolor='white', frameon=True)
+    
+
+plot_co2_prices()

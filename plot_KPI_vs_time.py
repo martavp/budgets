@@ -27,13 +27,19 @@ ax1 = plt.subplot(gs1[0,0])
 gcb = [420, 580, 800, 1170]
 
 budgets = ['25', '34', '48', '70', '48-noH2network','48-wo_eff']
-decays = {'25':['be3', 'ex0'], 
-        '34':['be3', 'ex0'],
-        '48':['be3', 'ex0'], 
+decays = {'25':['ex0'], 
+        '34':['ex0'],
+        '48':['ex0'], 
         '48-noH2network':['ex0'], 
         '48-wo_eff':['ex0'], 
-        '70':['be3', 'ex0']}
- 
+        '70':['ex0']}
+
+#decays = {'25':['be3', 'ex0'], 
+#        '34':['be3', 'ex0'],
+#        '48':['be3', 'ex0'], 
+#        '48-noH2network':['ex0'], 
+#        '48-wo_eff':['ex0'], 
+#        '70':['be3', 'ex0']} 
 decay_name={'be3':'Late',
             'ex0':'Early'}
 marker_cb ={'25':'o', 
