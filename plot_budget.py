@@ -1,10 +1,7 @@
 
 import numpy as np
 import pandas as pd
-#import matplotlib
-
 import matplotlib.pyplot as plt
-
 from prepare_sector_network import co2_emissions_year
 
 def historical_emissions(cts):
@@ -64,7 +61,7 @@ def historical_emissions(cts):
     if "I" in opts:
         emissions += co2_totals.loc[["industrial non-elec","industrial processes",
                                           "domestic aviation","international aviation",
-                                          "domestic navigation","international navigation"]].sum()           
+                                          "domestic navigation","international navigation"]].sum()
     return emissions
 
 
@@ -80,13 +77,13 @@ def plot_carbon_budget_distribution():
     plt.style.use('seaborn-ticks')
     plt.rcParams['xtick.direction'] = 'in'
     plt.rcParams['ytick.direction'] = 'in'
-    plt.rcParams['xtick.labelsize'] = 20
-    plt.rcParams['ytick.labelsize'] = 20   
+    plt.rcParams['xtick.labelsize'] = 18
+    plt.rcParams['ytick.labelsize'] = 18
 
     plt.figure(figsize=(10, 7))
     gs1 = gridspec.GridSpec(1, 1)
     ax1 = plt.subplot(gs1[0,0])
-    ax1.set_ylabel('CO$_2$ emissions (Gt per year)',fontsize=22)
+    ax1.set_ylabel('CO$_2$ emissions (Gt per year)',fontsize=18)
     ax1.set_ylim([0,5])
     ax1.set_xlim([1990,2051])
     countries=pd.read_csv('results/countries.csv',  index_col=1) 
@@ -97,15 +94,20 @@ def plot_carbon_budget_distribution():
     col={'cb25ex0':'yellowgreen',
          'cb34ex0':'dodgerblue',
          'cb48ex0':'gold',
-         #'orange', 
+         # xxx:'orange', 
          'cb70ex0':'darkred'}
+    labels={'cb25ex0':'1.50$^{\circ}$C,', 
+         'cb34ex0':'1.60$^{\circ}$C',
+         'cb48ex0':'1.75$^{\circ}$C',
+         #xxx:'orange', 
+         'cb70ex0':'2$^{\circ}$C'}
     for budget in budgets:
         path_cb =  'results/version-{}/csvs/'.format(budget)
         CO2_CAP=pd.read_csv(path_cb + 'carbon_budget_distribution.csv',  
                         index_col=0) 
         ls='-' if 'ex' in budget else '--'
         ax1.plot(e_1990*CO2_CAP[budget],linewidth=3, 
-                 color=col[budget], linestyle=ls, label=None)
+                 color=col[budget], linestyle=ls, label=labels[budget])
             
     emissions = historical_emissions(cts)
 
@@ -134,15 +136,14 @@ def plot_carbon_budget_distribution():
                      linewidth=0, markeredgecolor='black', 
                      label='EU under-discussion target', zorder=10, 
                      clip_on=False) 
-            
+
     ax1.plot([2050],[0.125*emissions[1990]],'ro',
                      marker='*', markersize=12, markerfacecolor='black',
                      markeredgecolor='black', label='EU commited target')
-            
-    ax1.legend(['1.50$^{\circ}$C,', '1.60$^{\circ}$C', '1.75$^{\circ}$C', '2$^{\circ}C$'], 
-               fancybox=True, fontsize=18, loc=(0.01,0.01), 
+
+    ax1.legend( fancybox=True, fontsize=16, loc=(0.01,0.01), 
                facecolor='white', frameon=True) 
-            
+
     path_cb_plot = 'figures/'             
     plt.savefig(path_cb_plot+'carbon_budgets.png', dpi=300) 
 

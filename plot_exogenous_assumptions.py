@@ -12,17 +12,17 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
 plt.style.use('seaborn-ticks')
-plt.rcParams['axes.labelsize'] = 14
-plt.rcParams['legend.fontsize'] = 14
-plt.rcParams['xtick.labelsize'] = 14
-plt.rcParams['ytick.labelsize'] = 14
+plt.rcParams['axes.labelsize'] = 18
+plt.rcParams['legend.fontsize'] = 18
+plt.rcParams['xtick.labelsize'] = 18
+plt.rcParams['ytick.labelsize'] = 18
 plt.rcParams['xtick.direction'] = 'in'
 plt.rcParams['ytick.direction'] = 'in'
-plt.rcParams['axes.titlesize'] = 14
+plt.rcParams['axes.titlesize'] = 18
 
 def plot_exogenous_parameter(exogenous_parameter, data, y_title, 
                              exogeous_parameter2=None, data2=None):
-    plt.figure(figsize=(7, 5))
+    plt.figure(figsize=(10, 7))
     gs1 = gridspec.GridSpec(1, 1)
     ax1 = plt.subplot(gs1[0,0])
     ax1.plot(pd.Series(data), linewidth=3,label=exogenous_parameter)
@@ -42,7 +42,7 @@ with open('config.yaml') as f:
      snakemake.config = yaml.safe_load(f)
 
 plot_exogenous_parameter('reduction_space_heat_demand',
-                         snakemake.config['sector']['retrofitting']['dE'],
+                         snakemake.config['sector']['reduce_space_heat_exogenously_factor'],
                          'Reduction of space heat demand (relative to 2020)')
 
 plot_exogenous_parameter('land_transport_electric_share',
