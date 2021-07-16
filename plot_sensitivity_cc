@@ -1,0 +1,23 @@
+# -*- coding: utf-8 -*-
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+idx = pd.IndexSlice
+
+
+plt.style.use('seaborn-ticks')
+plt.rcParams['axes.labelsize'] = 18
+plt.rcParams['legend.fontsize'] = 18
+plt.rcParams['xtick.labelsize'] = 18
+plt.rcParams['ytick.labelsize'] = 18
+plt.rcParams['xtick.direction'] = 'in'
+plt.rcParams['ytick.direction'] = 'in'
+plt.rcParams['axes.titlesize'] = 18
+plt.figure(figsize=(10, 30))
+gs1 = gridspec.GridSpec(7, 1)
+gs1.update(wspace=0.05, hspace=0.1)
+
+transmission='1.0'
+cluster='37m'
+decay='ex0'
+budget = '51.4'

@@ -42,7 +42,7 @@ for _m, _col,_cb67, _cb50, _cb33, _T,_s in zip(m, col, cb[67], cb[50], cb[33], T
 
 ax1.set_ylabel('Temperature Increase ($^{\circ}$C)')
 ax1.set_xlabel('Europe carbon budget (GtCO$_2$)') 
-ax1.set_xlim(22, 120)
+ax1.set_xlim(22, 150)
 ax1.set_ylim(1.3, 2.1)
 
 # budgets for Europe with other split criteria
@@ -50,11 +50,11 @@ ax1.plot(cb[67][2]*share_fair, T[2], marker=m[2],
             markerfacecolor=col[2], markeredgecolor='black', markersize=16, )
 ax1.plot(cb[67][2]*share_unfair, T[2], marker=m[2], 
             markerfacecolor=col[2], markeredgecolor='black', markersize=16, )
-ax1.annotate('50% unfair',xy=(cb[67][2]*share_unfair, 1.75),
+ax1.annotate('67% unfair',xy=(cb[67][2]*share_unfair, 1.75),
              xytext=(cb[67][2]*share_unfair, 1.75-0.12),
              fontsize=18, color='black', zorder=-1,
              arrowprops=dict(facecolor='black', lw=0.5, arrowstyle='-'))
-ax1.annotate('50%  fair',xy=(cb[67][2]*share_fair, 1.75),
+ax1.annotate('67%  fair',xy=(cb[67][2]*share_fair, 1.75),
              xytext=(cb[67][2]*share_fair-15, 1.75+0.1),
              fontsize=18, color='black', zorder=-1,
              arrowprops=dict(facecolor='black', lw=0.5, arrowstyle='-'))

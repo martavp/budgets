@@ -11,6 +11,7 @@
 *.tmp
 /results
 /paper
+/coauthors_revison
 /data
 prepare_sector_network.py
 build_energy_totals.py

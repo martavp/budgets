@@ -89,25 +89,25 @@ def plot_carbon_budget_distribution():
     countries=pd.read_csv('results/countries.csv',  index_col=1) 
     cts=countries.index.to_list()
     e_1990 = co2_emissions_year(cts, opts, year=1990)
-    budgets = ['cb25ex0','cb34ex0','cb48ex0','cb70ex0']
-
-    col={'cb25ex0':'yellowgreen',
-         'cb34ex0':'dodgerblue',
-         'cb48ex0':'gold',
-         # xxx:'orange', 
-         'cb70ex0':'darkred'}
-    labels={'cb25ex0':'1.50$^{\circ}$C,', 
-         'cb34ex0':'1.60$^{\circ}$C',
-         'cb48ex0':'1.75$^{\circ}$C',
-         #xxx:'orange', 
-         'cb70ex0':'2$^{\circ}$C'}
+    budgets = ['27','36.7','51.4','63', '75.2']
+    decay='ex0'
+    col={'27':'yellowgreen',
+         '36.7':'dodgerblue',
+         '51.4':'gold',
+         '63':'orange',
+         '75.2':'darkred'}
+    
+    labels={'27':'1.50$^{\circ}$C,', 
+            '36.7':'1.60$^{\circ}$C',
+            '51.4':'1.75$^{\circ}$C',
+            '63':'1.87$^{\circ}$C',
+            '75.2':'2$^{\circ}$C'}
     for budget in budgets:
-        path_cb =  'results/version-{}/csvs/'.format(budget)
-        CO2_CAP=pd.read_csv(path_cb + 'carbon_budget_distribution.csv',  
+        path_cb =  'results/version-baseline/csvs/'
+        CO2_CAP=pd.read_csv(path_cb + 'carbon_budget_distributioncb{}{}.csv'.format(budget,decay),
                         index_col=0) 
-        ls='-' if 'ex' in budget else '--'
-        ax1.plot(e_1990*CO2_CAP[budget],linewidth=3, 
-                 color=col[budget], linestyle=ls, label=labels[budget])
+        ax1.plot(e_1990*CO2_CAP['cb' + budget + decay ],linewidth=3, 
+                 color=col[budget], linestyle='-', label=labels[budget])
             
     emissions = historical_emissions(cts)
 
