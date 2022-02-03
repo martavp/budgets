@@ -1,2 +1,2 @@
-# transition-paths
-Preliminary repository to work on transitin paths graphs
+# budgets
+Scripts and plots from the budgets paper
