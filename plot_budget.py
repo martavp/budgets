@@ -89,19 +89,23 @@ def plot_carbon_budget_distribution():
     countries=pd.read_csv('results/countries.csv',  index_col=1) 
     cts=countries.index.to_list()
     e_1990 = co2_emissions_year(cts, opts, year=1990)
-    budgets = ['27','36.7','51.4','63', '75.2']
     decay='ex0'
-    col={'27':'yellowgreen',
-         '36.7':'dodgerblue',
-         '51.4':'gold',
-         '63':'orange',
-         '75.2':'darkred'}
+    budgets = ['25.7','35.4','45.0','54.7', '64.3', '73.9']
+
+    col={'25.7':'yellowgreen',
+         '35.4':'dodgerblue',
+         '45.0':'gold',
+         '54.7':'orange',
+         '64.3':'darkred',
+         '73.9':'magenta'}
     
-    labels={'27':'1.50$^{\circ}$C,', 
-            '36.7':'1.60$^{\circ}$C',
-            '51.4':'1.75$^{\circ}$C',
-            '63':'1.87$^{\circ}$C',
-            '75.2':'2$^{\circ}$C'}
+    labels={'25.7':'1.5$^{\circ}$C', 
+            '35.4':'1.6$^{\circ}$C',
+            '45.0':'1.7$^{\circ}$C',
+            '54.7':'1.8$^{\circ}$C',
+            '64.3':'1.9$^{\circ}$C',
+            '73.9':'2.0$^{\circ}$C'}
+    
     for budget in budgets:
         path_cb =  'results/version-baseline/csvs/'
         CO2_CAP=pd.read_csv(path_cb + 'carbon_budget_distributioncb{}{}.csv'.format(budget,decay),
@@ -118,26 +122,25 @@ def plot_carbon_budget_distribution():
     # network, but targets refer to EU)
     ax1.plot([2020],[0.8*emissions[1990]],
                      marker='*', markersize=12, markerfacecolor='black',
-                     markeredgecolor='black')    
+                     markeredgecolor='black')
             
     ax1.plot([2030],[0.45*emissions[1990]],
-                     marker='*', markersize=12, markerfacecolor='white',
-                     markeredgecolor='black')    
-            
-    ax1.plot([2030],[0.6*emissions[1990]],
                      marker='*', markersize=12, markerfacecolor='black',
                      markeredgecolor='black')
             
-    ax1.plot([2050, 2050],[x*emissions[1990] for x in [0.2, 0.05]],
-                  color='gray', linewidth=2, marker='_', alpha=0.5) 
+#    ax1.plot([2030],[0.6*emissions[1990]],
+#                     marker='*', markersize=12, markerfacecolor='black',
+#                     markeredgecolor='black')
             
-    ax1.plot([2050],[0.01*emissions[1990]],
-                     marker='*', markersize=12, markerfacecolor='white', 
-                     linewidth=0, markeredgecolor='black', 
-                     label='EU under-discussion target', zorder=10, 
-                     clip_on=False) 
+#    ax1.plot([2050, 2050],[x*emissions[1990] for x in [0.2, 0.05]],
+#                  color='gray', linewidth=2, marker='_', alpha=0.5) 
+#    ax1.plot([2050],[0.01*emissions[1990]],
+#                     marker='*', markersize=12, markerfacecolor='white', 
+#                     linewidth=0, markeredgecolor='black', 
+#                     label='EU under-discussion target', zorder=10, 
+#                     clip_on=False) 
 
-    ax1.plot([2050],[0.125*emissions[1990]],'ro',
+    ax1.plot([2050],[0.01*emissions[1990]],'ro',
                      marker='*', markersize=12, markerfacecolor='black',
                      markeredgecolor='black', label='EU commited target')
 

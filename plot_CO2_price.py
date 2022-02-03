@@ -20,33 +20,46 @@ plt.figure(figsize=(10, 7))
 gs1 = gridspec.GridSpec(1, 1)
 ax1 = plt.subplot(gs1[0,0])
 
-budgets = ['27', '36.7', '51.4', '63' , '75.2']
 
-color ={'27':'yellowgreen', 
-        '36.7':'dodgerblue', 
-        '51.4':'gold',
-        '63': 'orange',
-        '75.2':'darkred',
-        '36.7-noH2network':'black',
-        '36.7-wo_eff':'black',}
+budgets = ['25.7','35.4','45.0','54.7', '64.3', '73.9']
 
-label={'27':'1.5$^{\circ}$C',
-      '36.7':'1.6$^{\circ}$C', 
-      '51.4':'1.75$^{\circ}$C', 
-      '63':'1.87$^{\circ}$C', 
-      '75.2':'2.0$^{\circ}$C'}
+color={'25.7':'yellowgreen',
+     '35.4':'dodgerblue',
+     '45.0':'gold',
+     '54.7':'orange',
+     '64.3':'darkred',
+     '73.9':'magenta'}
+    
+label={'25.7':'1.5$^{\circ}$C', 
+        '35.4':'1.6$^{\circ}$C',
+        '45.0':'1.7$^{\circ}$C',
+        '54.7':'1.8$^{\circ}$C',
+        '64.3':'1.9$^{\circ}$C',
+        '73.9':'2.0$^{\circ}$C'}
+
+
 
 decay = 'ex0'
 transmission='1.0'
 cluster='37m'
 years=pd.Series(pd.date_range("2019", periods=7, freq="5Y"))
-
+version='baseline' #'sensitivity-fixedcosts' 
 for budget in budgets:
-    metrics_df = pd.read_csv('results/version-baseline/csvs/metrics.csv',
+    metrics_df = pd.read_csv('results/version-{}/csvs/metrics.csv'.format(version),
                             index_col=list(range(1)), header=list(range(4)))
     opt ='3H-T-H-B-I-solar+p3-dist1-cb{}{}'.format(budget, decay)
-    co2_price =  metrics_df.loc[idx['co2_shadow'],idx[cluster, transmission, opt,:]].droplevel([0,1])
-    plt.plot(years, co2_price.values, color=color[budget], linewidth=3, label=label[budget])
+    co2_price = metrics_df.loc[idx['co2_shadow'],idx[cluster, transmission, opt,:]].droplevel([0,1,2], axis=0)
+    # Add one value per year to plot step-wise figures
+    co2_price.index=[int(x) for x in co2_price.index]
+    for year in range(2020,2055,5):
+        for j in range(0,5):
+            co2_price[year-2+j]=co2_price[year]
+    co2_price=co2_price.reindex(sorted(co2_price.index), axis=1)
+    co2_price=co2_price.drop(index=[2018,2019,2020,2051,2052])
+
+    ax1.plot(pd.to_datetime(co2_price.index, format='%Y'), 
+             co2_price.values, color=color[budget], 
+             linewidth=3, label=label[budget])
 
 # add historical CO2 prices
 # data downloaded from https://sandbag.org.uk/carbon-price-viewer/
@@ -56,10 +69,10 @@ ax1.plot(date, data['Price'] , linewidth=2, color='black', label='EU-ETS')
 
 ax1.set_ylabel('CO$_2$ price (€/ton)', fontsize=16)
 ax1.grid(linestyle='--')
-ax1.set_ylim([0, 450])  
-ax1.set_xlim([datetime(2008,1,1,0,0,0), datetime(2051,1,1,0,0,0)]) 
-ax1.legend(fancybox=False, fontsize=16, loc=(0.012,0.6), facecolor='white', frameon=True)
-plt.savefig('figures/co2_price.png', dpi=300, bbox_inches='tight')
+ax1.set_ylim([0, 500]) # ax1.set_ylim([0, 610])
+ax1.set_xlim([datetime(2008,1,1,0,0,0), datetime(2050,1,1,0,0,0)]) 
+ax1.legend(fancybox=False, fontsize=16, loc=(0.012,0.5), facecolor='white', frameon=True)
+plt.savefig('figures/co2_price_{}.png'.format(version), dpi=300, bbox_inches='tight')
 
 
 

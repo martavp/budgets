@@ -3,6 +3,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+from datetime import datetime
 import seaborn as sns; sns.set()
 idx = pd.IndexSlice
 
@@ -19,23 +20,23 @@ plt.figure(figsize=(20, 25))
 gs1 = gridspec.GridSpec(5, 4)
 gs1.update(wspace=0.5, hspace=0.1)
 
-budgets = ['27', '36.7', '51.4', '63' , '75.2']
 
-color = {'27':'yellowgreen', 
-         '36.7':'dodgerblue', 
-         '51.4':'gold',
-         '63': 'orange',
-         '75.2':'darkred',
-         '36.7-noH2network':'black',
-         '36.7-wo_eff':'black',}
+budgets = ['25.7','35.4','45.0','54.7', '64.3', '73.9']
 
-label = {'27':'1.5$^{\circ}$C',
-         '36.7':'1.6$^{\circ}$C', 
-         '51.4':'1.75$^{\circ}$C', 
-         '63':'1.87$^{\circ}$C', 
-         '75.2':'2.0$^{\circ}$C', 
-         '36.7-noH2network':'1.7$^{\circ}$C (wo H$_2$ network)',
-         '36.7-wo_eff':'1.7$^{\circ}$C (no eff)',}
+color={'25.7':'yellowgreen',
+     '35.4':'dodgerblue',
+     '45.0':'gold',
+     '54.7':'orange',
+     '64.3':'darkred',
+     '73.9':'magenta'}
+    
+label={'25.7':'1.5$^{\circ}$C', 
+        '35.4':'1.6$^{\circ}$C',
+        '45.0':'1.7$^{\circ}$C',
+        '54.7':'1.8$^{\circ}$C',
+        '64.3':'1.9$^{\circ}$C',
+        '73.9':'2.0$^{\circ}$C'}
+
 
 decay = 'ex0'
 transmission='1.0'
@@ -74,20 +75,37 @@ for i, tech in enumerate(techs):
         if tech in tech_links:
             component='links'
         eff = efficiency[tech] if tech in tech_eff else 1
-        capacities =  eff*capacities_df.loc[idx[component, tech],idx[cluster, transmission, opt,:]].droplevel([0,1])
-        plt.plot([int(x) for x in capacities.index.get_level_values(1)], capacities.values, color=color[budget], 
-                  linewidth=3, label=label[budget])
+        capacities =  eff*capacities_df.loc[idx[component, tech],idx[cluster, transmission, opt,:]].droplevel([0,1,2])
+        capacities.index=[int(x) for x in capacities.index]
+        
+        for year in range(2020,2055,5):
+            for j in range(0,5):
+                capacities[year-2+j]=capacities[year]
+        capacities = capacities.reindex(sorted(capacities.index), axis=1)
+        capacities = capacities.drop(index=[2018,2019,2020,2051,2052])
+        
+        plt.plot(
+                #pd.to_datetime(capacities.index, format='%Y'), 
+                capacities.index,
+                capacities.values, 
+                 color=color[budget], linewidth=3, label=label[budget])
 
     ax1.set_ylabel(tech + ' (' + unit + ')', fontsize=18)
+    ax1.grid(linestyle='--')
     ax1.set_xticks([2020, 2030, 2040, 2050])
     ax1.grid(linestyle='--')
+    ax1.set_xlim([2020,2050])
     if int(i/4)==4:
-        ax1.set_xticklabels(['2020', '2030', '2040', '2050'])
+        ax1.set_xticklabels([2020, 2030, 2040, 2050], rotation=45)
+        ax1.grid(linestyle='--')
     else:
-        ax1.set_xticks([])
+        ax1.set_xticklabels([])
+        ax1.grid(linestyle='--')
     
     if i==0:
-        ax1.legend(fancybox=False, fontsize=18, loc=(0.9,1.05), facecolor='white', ncol=5, frameon=True)
+        ax1.legend(fancybox=False, fontsize=18, loc=(0.5,1.05), 
+                   facecolor='white', ncol=7, frameon=True)
+    
 plt.savefig('figures/capacities.png', dpi=300, bbox_inches='tight')
 
 

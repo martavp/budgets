@@ -11,6 +11,8 @@
 *.tmp
 /results
 /paper
+/ArXiv Submission
+/ArXiv resubmission
 /coauthors_revison
 /data
 prepare_sector_network.py

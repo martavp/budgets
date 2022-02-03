@@ -29,25 +29,23 @@ transmission='1.0'
 cluster='37m'
 decay='ex0'
 
-budgets = ['27',
-           '36.7',
-           '51.4',
-           '63',
-           '75.2']
+budgets = ['25.7','35.4','45.0','54.7', '64.3', '73.9']
 
-label_budget = {'27':'1.5$^{\circ}$C',
-                '36.7':'1.6$^{\circ}$C', 
-                '51.4':'1.75$^{\circ}$C', 
-                '63':'1.87$^{\circ}$C', 
-                '75.2':'2.0$^{\circ}$C', 
-                '36.7-noH2network':'1.7$^{\circ}$C (wo H$_2$ network)',
-                '36.7-wo_eff':'1.7$^{\circ}$C (no eff)',}
+
+label_budget={'25.7':'1.5$^{\circ}$C', 
+            '35.4':'1.6$^{\circ}$C',
+            '45.0':'1.7$^{\circ}$C',
+            '54.7':'1.8$^{\circ}$C',
+            '64.3':'1.9$^{\circ}$C',
+            '73.9':'2.0$^{\circ}$C'}
+
+
 
 e = {'electricity' : ['CCGT2', 
                       'OCGT2',
                       'coal2',
                       'lignite2',
-                      'nuclear2',
+                      #'nuclear2',
                       'oil2',],
      'heating':[],
      'heating_individual' : ['residential rural gas boiler2',
@@ -149,11 +147,18 @@ for i,budget in enumerate(budgets):
     e_sectors['shipping'] = balances_df.loc[idx['co2', 'loads', 'shipping oil emissions'],idx[cluster, transmission, opt,:]].droplevel([0,1,2]).fillna(0)
     
     e_ETS[idx[budget,decay, 'no_ETS']] += e_sectors['road transport'] + e_sectors['shipping']
-    
 
 
     #plot
     e_t=e_sectors.transpose()
+    # Add one value per year to plot step-wise figures
+    e_t.columns=[int(x) for x in e_t.columns]
+    for year in range(2020,2055,5):
+        for j in range(0,5):
+            e_t[year-2+j]=e_t[year]
+    e_t=e_t.reindex(sorted(e_t.columns), axis=1)
+    e_t.drop(columns=[2018,2019,2020,2051,2052])
+    
     ax1.stackplot([int(x) for x in e_t.columns],
                 e_t*0.000000001,  #tCO2 -> Gt CO2
                 colors=[colors[s] for s in e_t.index])
@@ -161,11 +166,11 @@ for i,budget in enumerate(budgets):
     ax1.set_xlim([2020, 2050])
     ax1.set_yticks([1, 2, 3])
     ax1.set_ylabel("GtCO$_2$/a")
-    ax1.text(2046, 3, label_budget[budget], fontsize=18)
+    ax1.text(2046, 3.5, label_budget[budget], fontsize=18)
     
-    if i!=4:
+    if i!=5:
         ax1.set_xticks([])
-ax1.legend(fancybox=True, fontsize=18, loc=(0.4, 5.3), facecolor='white', 
+ax1.legend(fancybox=True, fontsize=18, loc=(0.37, 5.5), facecolor='white', 
            frameon=True, ncol=2, labels=e_t.index)
 plt.savefig('figures/emissions_per_sector_transmission{}.png'.format(transmission),
             dpi=150, bbox_inches='tight')
@@ -178,6 +183,13 @@ gs1.update(wspace=0.05, hspace=0.05)
 for i,budget in enumerate(budgets):  
     ax1 = plt.subplot(gs1[i,0])
     e_t=e_ETS[idx[budget,decay]].transpose()
+    # Add one value per year to plot step-wise figures
+    e_t.columns=[int(x) for x in e_t.columns]
+    for year in range(2020,2055,5):
+        for j in range(0,5):
+            e_t[year-2+j]=e_t[year]
+    e_t=e_t.reindex(sorted(e_t.columns), axis=1)
+    e_t.drop(columns=[2018,2019,2020,2051,2052])
     ax1.stackplot([int(x) for x in e_t.columns],
                    e_t*0.000000001,  #tCO2 -> Gt CO2 
                    colors=[colors[s] for s in e_t.index])
@@ -186,9 +198,9 @@ for i,budget in enumerate(budgets):
     ax1.set_yticks([1, 2, 3])
     ax1.set_ylabel("GtCO$_2$/a")
     ax1.text(2046, 3, label_budget[budget], fontsize=18)
-    if i!=4:
+    if i!=5:
         ax1.set_xticks([])
-ax1.legend(fancybox=True, fontsize=14, loc=(0.6, 5.3), facecolor='white', 
+ax1.legend(fancybox=True, fontsize=14, loc=(0.6, 5.7), facecolor='white', 
            frameon=True, ncol=2, labels=e_t.index)       
 plt.savefig('figures/emissions_ETS_transmission{}.png'.format(transmission),
             dpi=150, bbox_inches='tight')
